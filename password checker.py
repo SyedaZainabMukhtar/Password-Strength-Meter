@@ -75,28 +75,33 @@ st.markdown("<p style='text-align: center;'>Enter a password to check its securi
 def check_password_strength(password):
     score = 0
     feedback = []
-    
+    checks = {"length": False, "case": False, "digit": False, "special": False}
+
     # Length Check
     if len(password) >= 8:
         score += 1
+        checks["length"] = True
     else:
         feedback.append("❌ Password should be **at least 8 characters long**.")
 
     # Upper & Lower Case Check
     if re.search(r"[A-Z]", password) and re.search(r"[a-z]", password):
         score += 1
+        checks["case"] = True
     else:
         feedback.append("❌ Password should include **both uppercase (A-Z) and lowercase (a-z) letters**.")
 
     # Number Check
     if re.search(r"\d", password):
         score += 1
+        checks["digit"] = True
     else:
         feedback.append("❌ Password should include **at least one number (0-9)**.")
 
     # Special Character Check
     if re.search(r"[!@#$%^&*<>]", password):
         score += 1
+        checks["special"] = True
     else:
         feedback.append("❌ Password should include **at least one special character (!@#$%^&*<>).**")
 
@@ -115,7 +120,14 @@ def check_password_strength(password):
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # Feedback
+    # Dynamic Checkmarks for Password Guidelines
+    st.subheader("✅ Password Requirements:")
+    st.write(f"{'✅' if checks['length'] else '❌'} **At least 8 characters**")
+    st.write(f"{'✅' if checks['case'] else '❌'} **Upper & lowercase letters (A-Z, a-z)**")
+    st.write(f"{'✅' if checks['digit'] else '❌'} **At least one number (0-9)**")
+    st.write(f"{'✅' if checks['special'] else '❌'} **At least one special character (!@#$%^&*<>)**")
+
+    # Feedback for Weak Passwords
     if feedback:
         with st.expander("⚡ **Improve Your Password**"):
             for item in feedback:
@@ -130,3 +142,4 @@ if st.button("Check Strength"):
         check_password_strength(password)
     else:
         st.warning("⚠ Please enter a password.")
+
